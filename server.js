@@ -50,20 +50,3 @@ module.exports = {
 fs.readdirSync(models)
     .filter(file => ~file.indexOf('.js'))
     .forEach(file => require(join(models, file)));
-
-// Bootstrap routes
-require('./config/passport')(passport);
-require('./config/express')(app, passport);
-require('./config/routes')(app, passport);
-
-
-function listen() {
-    if (app.get('env') === 'test') return;
-    app.listen(port);
-    console.log('Express app started on port ' + port);
-}
-
-function connect() {
-
-    return connection;
-}
