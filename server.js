@@ -58,8 +58,8 @@ function listen () {
 }
 
 function connect () {
+    console.log('mongodb started on : '+uristring);
 //  var options = { server: { socketOptions: { keepAlive: 1 } } };
   var connection = mongoose.connect(uristring).connection;
-  console.log('mongodb started on : '+uristring);
   return connection;
 }
