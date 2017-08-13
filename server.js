@@ -22,8 +22,7 @@ const config = require('./config');
 const models = join(__dirname, 'app/models');
 const port = process.env.PORT || 3000;
 const uristring =
-    process.env.MONGODB_URI ||
-    'mongodb://localhost/test';
+    process.env.MONGODB_URI;
 
 const app = express();
 const connection = connect();
