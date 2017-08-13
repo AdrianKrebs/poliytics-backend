@@ -20,7 +20,6 @@ const passport = require('passport');
 const config = require('./config');
 
 const models = join(__dirname, 'app/models');
-const port = process.env.PORT || 3000;
 const uristring =
     process.env.MONGODB_URI || process.env.MONGOLAB_URI ||
     'mongodb://localhost/test';
@@ -37,14 +36,18 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 const app = express();
-
+app.set('port', process.env.PORT || 5000);
 /**
  * Expose
  */
 
-module.exports = {
-    app
-};
+// Start server
+app.listen(app.get('port'), function () {
+    console.log('Node app is running on port', app.get('port'));
+});
+
+module.exports = app;
+
 
 // Bootstrap models
 fs.readdirSync(models)
