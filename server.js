@@ -60,6 +60,6 @@ function listen () {
 
 function connect () {
   var options = { server: { socketOptions: { keepAlive: 1 } } };
-  var connection = mongoose.connect(config.db, options).connection;
+  var connection = mongoose.connect(uristring, options).connection;
   return connection;
 }
