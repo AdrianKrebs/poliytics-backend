@@ -10,6 +10,7 @@
     "node": ">=6.x"
   },
   "scripts": {
+    "start": "node server.js",
     "test": "./node_modules/.bin/cross-env NODE_ENV=test ./node_modules/.bin/babel-tape-runner test/test-*.js"
   },
   "dependencies": {

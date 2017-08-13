@@ -18,8 +18,6 @@ let userIds = R.map(function (user) {
     return user.id;
 }, users.users);
 
-console.log(userIds);
-
 const client = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
