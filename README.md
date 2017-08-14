@@ -30,7 +30,7 @@ load by name <br>
 
 
 load by party name <br>
-`http://localhost:3000/tweets/user/SVP`<br>
+`http://localhost:3000/tweets/user/party/SVP`<br>
 
 
 ### Debugging
