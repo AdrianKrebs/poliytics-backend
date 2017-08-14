@@ -85,7 +85,7 @@ exports.index = async(function*(req, res) {
 
 exports.loadByUser = async(function*(req, res) {
     const page = (req.query.page > 0 ? req.query.page : 1) - 1;
-    const userId = req.params.id;
+    const userId = req.params.userId;
     const limit = 30;
     const options = {
         limit: limit,
