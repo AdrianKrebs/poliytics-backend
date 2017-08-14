@@ -14,7 +14,7 @@ const Schema = mongoose.Schema;
 
 const TweetSchema = new Schema({
     text: {type: String, default: '', trim: true},
-    user: {type: String},
+    user: {id: {type: String}, name: {type: String}, party: {type: String}},
     createdAt: {type: Date, default: Date.now}
 });
 
@@ -81,7 +81,21 @@ TweetSchema.statics = {
     },
 
     loadByUser: function (userId) {
-        return this.find({user:userId})
+        return this.find({user: {id: userId}})
+        // .populate('user', 'name email username')
+        // .populate('comments.user')
+            .exec();
+    },
+
+    loadByName: function (name) {
+        return this.find({user: {name: name}})
+        // .populate('user', 'name email username')
+        // .populate('comments.user')
+            .exec();
+    },
+
+    loadByParty: function (partyName) {
+        return this.find({user: {party: partyName}})
         // .populate('user', 'name email username')
         // .populate('comments.user')
             .exec();

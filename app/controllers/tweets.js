@@ -32,7 +32,7 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
 
 
 function streamFilter(data) {
-    const newTweet = new Tweet({user: data.user.id, text: data.text});
+    const newTweet = new Tweet({user: {id: data.user.id, name: data.user.name, party: "SVP"}, text: data.text});
     console.log('someone just tweeted!.....' + data.text);
     newTweet.uploadAndSave(data);
 }
@@ -85,7 +85,7 @@ exports.index = async(function*(req, res) {
 
 exports.loadByUser = async(function*(req, res) {
     const page = (req.query.page > 0 ? req.query.page : 1) - 1;
-    const userId = req.query.id;
+    const userId = req.params.id;
     const limit = 30;
     const options = {
         limit: limit,
@@ -101,7 +101,49 @@ exports.loadByUser = async(function*(req, res) {
         page: page + 1,
         pages: Math.ceil(count / limit)
     });
-})
+});
+
+exports.loadByName = async(function*(req, res) {
+    const page = (req.query.page > 0 ? req.query.page : 1) - 1;
+    const name = req.params.name.replace(/\+/g,' ');
+    const limit = 30;
+    const options = {
+        limit: limit,
+        page: page
+    };
+
+    const tweets = yield Tweet.loadByName(name);
+    const count = yield Tweet.count();
+
+    res.json({
+        title: 'Tweets',
+        tweets: tweets,
+        page: page + 1,
+        pages: Math.ceil(count / limit)
+    });
+});
+
+exports.loadByParty = async(function*(req, res) {
+    const page = (req.query.page > 0 ? req.query.page : 1) - 1;
+    const party = req.params.party;
+    const limit = 30;
+    const options = {
+        limit: limit,
+        page: page
+    };
+
+    const tweets = yield Tweet.loadByParty(party);
+    const count = yield Tweet.count();
+
+    res.json({
+        title: 'Tweets',
+        tweets: tweets,
+        page: page + 1,
+        pages: Math.ceil(count / limit)
+    });
+});
+
+
 
 /**
  * New tweet

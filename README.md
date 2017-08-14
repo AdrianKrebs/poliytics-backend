@@ -16,14 +16,21 @@ You need [MongoDB](https://www.mongodb.com) installed and running (mongod.exe)
     
 ### API
 
-Get tweets for a specific user: <br>
-`GET http://localhost:3000/tweets/user?id=168234077`
+Get tweets for a specific user id: <br>
+`GET http://localhost:3000/tweets/user/id/168234077`
 
 Get the 30 newest tweets (pagination) <br>
 `GET http://localhost:3000/tweets` <br>
 
 next page <br>
 `http://localhost:3000/tweets?page=1`<br>
+
+load by name <br>
+`http://localhost:3000/tweets/user/name/Roger+Nordmann`<br>
+
+
+load by party name <br>
+`http://localhost:3000/tweets/user/SVP`<br>
 
 
 ### Debugging
