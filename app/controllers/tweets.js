@@ -12,7 +12,20 @@ const Twitter = require('twitter');
 const R = require('ramda');
 const Rx = require('rxjs');
 const users = require('./paralament-list.json');
+const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
+const nlu = new NaturalLanguageUnderstandingV1({
+    version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
+});
 
+const FEATURE =  {
+    concepts: {},
+    entities: {},
+    keywords: {},
+    categories: {},
+    emotion: {},
+    sentiment: {},
+    semantic_roles: {},
+};
 
 let userIds = R.map(function (user) {
     return user.id;
@@ -25,6 +38,14 @@ const client = new Twitter({
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
+const nluCredentials = {
+    "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
+    "username": process.env.NATURAL_LANGUAGE_UNDERSTANDING_USERNAME,
+    "password": process.env.NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD
+
+};
+
+
 client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
     stream.on('data', streamFilter);
     stream.on('error', streamError);
@@ -32,9 +53,22 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
 
 
 function streamFilter(data) {
-    const newTweet = new Tweet({user: {id: data.user.id, name: data.user.name, party: "SVP"}, text: data.text});
     console.log('someone just tweeted!.....' + data.text);
-    newTweet.uploadAndSave(data);
+    console.log('let me analyze the sentiment of it....');
+    let query = {features: FEATURE, text: data.text};
+    nlu.analyze(query, (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('sentiment analyzed: ' + JSON.stringify(result));
+            const newTweet = new Tweet({
+                user: {id: data.user.id, name: data.user.name, party: "SVP"},
+                tweet: {text: data.text, sentiment: {score: result.sentiment.document.score, label: result.sentiment.document.label}}
+            });
+            newTweet.uploadAndSave(data);
+        }
+    });
+
 }
 
 function streamError(error) {
@@ -105,7 +139,7 @@ exports.loadByUser = async(function*(req, res) {
 
 exports.loadByName = async(function*(req, res) {
     const page = (req.query.page > 0 ? req.query.page : 1) - 1;
-    const name = req.params.name.replace(/\+/g,' ');
+    const name = req.params.name.replace(/\+/g, ' ');
     const limit = 30;
     const options = {
         limit: limit,
@@ -142,7 +176,6 @@ exports.loadByParty = async(function*(req, res) {
         pages: Math.ceil(count / limit)
     });
 });
-
 
 
 /**
