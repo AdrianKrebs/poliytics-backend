@@ -53,6 +53,9 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
 
 
 function streamFilter(data) {
+    if (isReply(data)) {
+        return;
+    }
     console.log('someone just tweeted!.....' + data.text);
     console.log('let me analyze the sentiment of it....');
     let query = {features: FEATURE, text: data.text};
@@ -70,6 +73,16 @@ function streamFilter(data) {
     });
 
 }
+function isReply(tweet) {
+    if (tweet.retweeted_status
+        || tweet.in_reply_to_status_id
+        || tweet.in_reply_to_status_id_str
+        || tweet.in_reply_to_user_id
+        || tweet.in_reply_to_user_id_str
+        || tweet.in_reply_to_screen_name)
+        return true
+}
+
 
 function streamError(error) {
     console.log(error);
