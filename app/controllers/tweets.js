@@ -53,11 +53,11 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
 
 
 function streamFilter(data) {
+    console.log('someone just tweeted!.....' + data.text);
+    console.log('let me analyze the sentiment of it....');
     if (isReply(data)) {
         return;
     }
-    console.log('someone just tweeted!.....' + data.text);
-    console.log('let me analyze the sentiment of it....');
     let query = {features: FEATURE, text: data.text};
     nlu.analyze(query, (err, result) => {
         if (err) {
