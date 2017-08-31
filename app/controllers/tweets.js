@@ -17,7 +17,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
 });
 
-const FEATURE =  {
+const FEATURE = {
     concepts: {},
     entities: {},
     keywords: {},
@@ -37,13 +37,6 @@ const client = new Twitter({
     access_token_key: process.env.ACCESS_TOKEN_KEY,
     access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
-
-const nluCredentials = {
-    "url": "https://gateway.watsonplatform.net/natural-language-understanding/api",
-    "username": process.env.NATURAL_LANGUAGE_UNDERSTANDING_USERNAME,
-    "password": process.env.NATURAL_LANGUAGE_UNDERSTANDING_PASSWORD
-
-};
 
 
 client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
@@ -66,7 +59,11 @@ function streamFilter(data) {
             console.log('sentiment analyzed: ' + JSON.stringify(result));
             const newTweet = new Tweet({
                 user: {id: data.user.id, name: data.user.name, party: "SVP"},
-                tweet: {text: data.text, sentiment: {score: result.sentiment.document.score, label: result.sentiment.document.label}}
+                tweet: {
+                    text: data.text,
+                    sentiment: {score: result.sentiment.document.score, label: result.sentiment.document.label},
+                    hashtags: R.map((hashtag) => hashtag.text, data.entities.hashtags)
+                }
             });
             newTweet.uploadAndSave(data);
         }
@@ -189,6 +186,14 @@ exports.loadByParty = async(function*(req, res) {
         pages: Math.ceil(count / limit)
     });
 });
+
+exports.loadMentions = function (req, res) {
+    //TODO rest call
+};
+
+exports.loadSentiment = function (req, res) {
+    //TODO sentiment
+};
 
 
 /**

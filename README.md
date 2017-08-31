@@ -33,6 +33,19 @@ load by party name <br>
 `http://localhost:3000/tweets/user/party/SVP`<br>
 
 
+Coming soon:
+mentions
+sentiment
+mentions?party=svp
+sentiment?party=svp
+mentions?politican-id=1234142
+sentiment?politican-id=1234142
+
+Tweets/count (default 1 woche)
+Tweets/count?party=svp
+Tweets/count?politican_id=svp
+
+
 ### Debugging
 
 `nodemon --inspect server.js` <br>

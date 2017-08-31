@@ -13,7 +13,7 @@ const Schema = mongoose.Schema;
  */
 
 const TweetSchema = new Schema({
-    tweet: {text: {type: String, default: '', trim: true}, sentiment: {score: {type: Number}, label: {type: String}}},
+    tweet: {text: {type: String, default: '', trim: true}, sentiment: {score: {type: Number}, label: {type: String}}, hastags: {type: [String]}},
     user: {id: {type: String}, name: {type: String}, party: {type: String}},
     createdAt: {type: Date, default: Date.now}
 });
