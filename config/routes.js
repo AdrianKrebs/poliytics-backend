@@ -5,7 +5,7 @@
  */
 
 const home = require('../app/controllers/home');
-const tweets = require('../app/controllers/tweets');
+const tweets = require('../app/controllers/tweets.controller');
 /**
  * Expose
  */

@@ -101,6 +101,18 @@ TweetSchema.statics = {
             .exec();
     },
 
+    loadSentiment: function () {
+
+    },
+
+    loadSentimentByParty: function (partyName) {
+        return this.find({'user.party': partyName}).select({ 'user.party': 1, 'tweet.sentiment.score': 1, 'tweet.sentiment.label':1});
+    },
+
+    loadSentimentByUser: function (id) {
+
+    },
+
     /**
      * List articles
      *

@@ -31,6 +31,7 @@ let userIds = R.map(function (user) {
     return user.id;
 }, users.users);
 
+
 const client = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -44,10 +45,10 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
     stream.on('error', streamError);
 });
 
-
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
     console.log('let me analyze the sentiment of it....');
+
     if (isReply(data)) {
         return;
     }
@@ -191,9 +192,27 @@ exports.loadMentions = function (req, res) {
     //TODO rest call
 };
 
-exports.loadSentiment = function (req, res) {
-    //TODO sentiment
-};
+
+//average
+// welche Zeiteinheit für Diagramm? average per week?
+exports.loadSentiment = async(function*(req, res) {
+    let sentiment = yield Tweet.loadSentimentByParty("SVP");
+    sentiment = sentiment.map((s) => {
+        let positive = 0;
+        let negative = 0;
+        let label = R.path(['tweet','sentiment','label'],s);
+        if (label === 'positive') {
+            positive += s.tweet.sentiment.score
+        } else if (label === 'negative') {
+            negative += s.tweet.sentiment.score
+        }
+        return {positive: positive, negative: negative}
+    });
+    res.json({
+        positive: R.mean(R.map((ele)=> ele.positive,sentiment)),
+        negative: R.mean(R.map((ele)=> ele.negative,sentiment))
+    });
+});
 
 
 /**
