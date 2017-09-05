@@ -30,9 +30,8 @@ module.exports = function (app) {
     //mentions
     app.get('/mentions', tweets.loadMentions);
 
-
     //sentiment
-    app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
+    app.get('/sentiment', tweets.loadSentiment);
 
     /**
      * Error handling

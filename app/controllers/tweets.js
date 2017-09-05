@@ -191,10 +191,24 @@ exports.loadMentions = function (req, res) {
     //TODO rest call
 };
 
-exports.loadSentiment = function (req, res) {
-    //TODO sentiment
-};
+exports.loadSentiment = async(function* (req, res) {
+    const tweets = yield Tweet.loadByQuery(createQuery(req.query));
+    const sentiments = R.map((tweet) => tweet.tweet.sentiment, tweets);
+    res.json({
+        title: 'Sentiments',
+        tweets: sentiments
+    });
+});
 
+function createQuery(urlQuery) {
+    if(urlQuery.party != undefined) {
+        return Tweet.getPartyQuery(urlQuery.party);
+    } else if(urlQuery.politicianId != undefined) {
+        return Tweet.getPoliticianIdQuery(urlQuery.politicianId);
+    } else {
+        return {};
+    }
+}
 
 /**
  * New tweet

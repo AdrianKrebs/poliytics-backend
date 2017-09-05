@@ -101,6 +101,18 @@ TweetSchema.statics = {
             .exec();
     },
 
+    getPoliticianIdQuery(id) {
+        return {'user.id': id};
+    },
+
+    getPartyQuery(party) {
+        return {'user.party': party};
+    },
+
+    loadByQuery(query) {
+        return this.find(query).exec();
+    },
+
     /**
      * List articles
      *
