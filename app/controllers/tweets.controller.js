@@ -189,7 +189,31 @@ exports.loadByParty = async(function*(req, res) {
 });
 
 exports.loadMentions = function (req, res) {
-    //TODO rest call
+    //
+}
+
+// Deprecated
+// Call into Twitter Search API
+// https://api.twitter.com/1.1/search/tweets.json?q=%40cedricwermuth&count=10
+const _loadMentions = function (req, res) {
+    const screenName = req.query.name;
+    client.get('search/tweets', {
+        q: '@' + screenName,
+        count: 100
+    }, function (error, tweets, response) {
+        let mentions = R.map((status) => {
+            return {
+                id: status.id,
+                created_at: status.created_at,
+                sender: {
+                    id: status.user.id,
+                    screen_name: status.user.screen_name
+                },
+            };
+        }, tweets.statuses);
+        console.log(JSON.stringify(mentions));
+        res.json(mentions);
+    });
 };
 
 
