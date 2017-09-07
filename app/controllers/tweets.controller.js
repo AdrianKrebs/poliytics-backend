@@ -11,7 +11,7 @@ const assign = Object.assign;
 const Twitter = require('twitter');
 const R = require('ramda');
 const Rx = require('rxjs');
-const users = require('./paralament-list.json');
+const users = require('../data/paralament-list.json');
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
