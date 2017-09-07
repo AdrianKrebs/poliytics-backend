@@ -5,13 +5,16 @@
  */
 
 const mongoose = require('mongoose');
-const {wrap: async} = require('co');
+const { wrap: async } = require('co');
 const Tweet = mongoose.model('Tweet');
+const Mention = mongoose.model('Mention');
 const assign = Object.assign;
 const Twitter = require('twitter');
 const R = require('ramda');
-const Rx = require('rxjs');
 const users = require('../data/paralament-list.json');
+const userIds = R.map((user) => user.id, users.users);
+const userIdsAsSet = new Set(userIds);
+const twitterScreenNames = R.map((user) => user.screen_name, users.users);
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
@@ -27,9 +30,7 @@ const FEATURE = {
     semantic_roles: {},
 };
 
-let userIds = R.map(function (user) {
-    return user.id;
-}, users.users);
+
 
 
 const client = new Twitter({
@@ -188,34 +189,35 @@ exports.loadByParty = async(function*(req, res) {
     });
 });
 
-exports.loadMentions = function (req, res) {
-    //
+console.log(twitterScreenNames.toString());
+
+client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
+    trackingStream.on('data', trackingFilter);
+    trackingStream.on('error', trackingError);
+});
+
+function trackingFilter (tweet) {
+    console.log('Got something through tracking');
+    const mentionedUserIds = R.map((mention) =>  mention.id, tweet.entities.user_mentions);
+    const mentionedPoliticianUserIds = R.filter((userId) => userIdsAsSet.has(userId), mentionedUserIds);
+    for (let id of mentionedPoliticianUserIds) {
+        const aMention = new Mention({
+            tweetId: tweet.id,
+            twitterUserId: id,
+            createdAt: tweet.created_at
+        });
+        console.log('Mention found: ' + aMention);
+        aMention.uploadAndSave();
+    }
 }
 
-// Deprecated
-// Call into Twitter Search API
-// https://api.twitter.com/1.1/search/tweets.json?q=%40cedricwermuth&count=10
-const _loadMentions = function (req, res) {
-    const screenName = req.query.name;
-    client.get('search/tweets', {
-        q: '@' + screenName,
-        count: 100
-    }, function (error, tweets, response) {
-        let mentions = R.map((status) => {
-            return {
-                id: status.id,
-                created_at: status.created_at,
-                sender: {
-                    id: status.user.id,
-                    screen_name: status.user.screen_name
-                },
-            };
-        }, tweets.statuses);
-        console.log(JSON.stringify(mentions));
-        res.json(mentions);
-    });
-};
+function trackingError (error) {
+    console.log('Error during reception on track stream: ' + error);
+}
 
+exports.loadMentions = function (req, res) {
+
+}
 
 //average
 // welche Zeiteinheit für Diagramm? average per week?

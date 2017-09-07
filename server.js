@@ -20,6 +20,8 @@ const mongoose = require('mongoose');
 
 require('./app/models/tweet');
 require('./app/models/user');
+require('./app/models/mention');
+
 const uristring =
     process.env.MONGODB_URI || process.env.MONGOLAB_URI ||
     'mongodb://localhost/test';
