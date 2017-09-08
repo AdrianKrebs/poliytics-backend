@@ -92,7 +92,7 @@
   },
   {
     "id": 1228066279,
-    "person_id":4130,
+    "person_id": 4130,
     "name": "nmasshardt",
     "party": "SP",
     "rat": "NR"
@@ -711,6 +711,300 @@
     "person_id": 3907,
     "name": "adelethorens",
     "party": "GPS",
+    "rat": "NR"
+  },
+  {
+    "id": 556256043,
+    "person_id": 4173,
+    "name": "SaSollberger",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3374457514,
+    "person_id": 806,
+    "name": "nr_mayagraf",
+    "party": "GPS",
+    "rat": "NR"
+  },
+  {
+    "id": 182760916,
+    "person_id": 4185,
+    "name": "FrickerJonas",
+    "party": "GPS",
+    "rat": "NR"
+  },
+  {
+    "id": 3257088023,
+    "person_id": 4184,
+    "name": "SibelArslanBS",
+    "party": "GPS",
+    "rat": "NR"
+  },
+  {
+    "id": 2881577681,
+    "person_id": 4198,
+    "name": "meyer_mattea",
+    "party": "SP",
+    "rat": "NR"
+  },
+  {
+    "id": 62798697,
+    "person_id": 4163,
+    "name": "Erich_Hess",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 385293664,
+    "person_id": 4174,
+    "name": "BabaSteinemann",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 2982472295,
+    "person_id": 4114,
+    "name": "HansjoergKnecht",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 121068845,
+    "person_id": 4178,
+    "name": "zac1967",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 353662120,
+    "person_id": 4158,
+    "name": "ThomasBurgherr",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 605639477,
+    "person_id": 4162,
+    "name": "fgrueter",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3221526790,
+    "person_id": 1138,
+    "name": "Martin_Baeumle",
+    "party": "GLP",
+    "rat": "NR"
+  },
+  {
+    "id": 724584142344695808,
+    "person_id": 4156,
+    "name": "michael_buffat",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3130690545,
+    "person_id": 4066,
+    "name": "QuadrantiR",
+    "party": "BDP",
+    "rat": "NR"
+  },
+  {
+    "id": 222903677,
+    "person_id": 4164,
+    "name": "ChristianImark",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 761741430,
+    "person_id": 4008,
+    "name": "LandoltMartin",
+    "party": "BDP",
+    "rat": "NR"
+  },
+  {
+    "id": 219076403,
+    "person_id": 4203,
+    "name": "anbarrile",
+    "party": "SP",
+    "rat": "NR"
+  },
+  {
+    "id": 3329760406,
+    "person_id": 4209,
+    "name": "HUBigler",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 3301771943,
+    "person_id": 4194,
+    "name": "LaurentWehrli",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 2899280753,
+    "person_id": 4123,
+    "name": "uschneiderschue",
+    "party": "SP",
+    "rat": "NR"
+  },
+  {
+    "id": 20442734,
+    "person_id": 4193,
+    "name": "nantermod",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 2882434546,
+    "person_id": 4190,
+    "name": "Marcel_Dobler",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 373194785,
+    "person_id": 4188,
+    "name": "FredericBorloz",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 716002872,
+    "person_id": 4208,
+    "name": "JauslinMatthias",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 1940472746,
+    "person_id": 4182,
+    "name": "ClaudeBegle",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3354760547,
+    "person_id": 3883,
+    "name": "AliceGlauser",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 2449367689,
+    "person_id": 4183,
+    "name": "GMarchand_Balet",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 888380018673545216,
+    "person_id": 4212,
+    "name": "Thomas_Egger_NR",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 289393019,
+    "person_id": 4159,
+    "name": "marcochiesa74",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3302607988,
+    "person_id": 4180,
+    "name": "th_ammann",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3039132947,
+    "person_id": 4067,
+    "name": "BrandHeinz",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 235081966,
+    "person_id": 4181,
+    "name": "Agmur",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 2991955251,
+    "person_id": 3898,
+    "name": "YvesNidegger",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 256863130,
+    "person_id": 4154,
+    "name": "udcvr64",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3070292500,
+    "person_id": 3877,
+    "name": "DorisFiala",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 43504217,
+    "person_id": 4213,
+    "name": "bendahan",
+    "party": "SP",
+    "rat": "NR"
+  },
+  {
+    "id": 2841156604,
+    "person_id": 4196,
+    "name": "TimGuldimann",
+    "party": "SP",
+    "rat": "NR"
+  },
+  {
+    "id": 4702673004,
+    "person_id": 4060,
+    "name": "SchneeDani67",
+    "party": "FDP",
+    "rat": "NR"
+  },
+  {
+    "id": 3133285757,
+    "person_id": 4172,
+    "name": "WernerSalzmann",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3096244845,
+    "person_id": 4090,
+    "name": "AmaudruzCeline",
+    "party": "SVP",
+    "rat": "NR"
+  },
+  {
+    "id": 3291242279,
+    "person_id": 1109,
+    "name": "gerhardpfister",
+    "party": "CVP",
+    "rat": "NR"
+  },
+  {
+    "id": 2860664668,
+    "person_id": 1071,
+    "name": "RuthHumbel",
+    "party": "CVP",
     "rat": "NR"
   }
 ]
