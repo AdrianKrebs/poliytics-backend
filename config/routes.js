@@ -35,8 +35,11 @@ module.exports = function (app) {
     app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
 
 
+    app.get('/trending', tweets.loadTrends);
 
-    app.get('/councillor/:id', parlamentController.getCouncillor); //mentions?politican-id=1234142
+
+
+    app.get('/councillor/:id', parlamentController.getCouncillor);
 
     /**
      * Error handling

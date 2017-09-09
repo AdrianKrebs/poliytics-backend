@@ -37,7 +37,7 @@ const client = new Twitter({
 
 
 client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
-    console.log('following: '+ userIds.toString());
+    console.log('following: '+ userIds);
     stream.on('data', streamFilter);
     stream.on('error', streamError);
 });
@@ -210,6 +210,20 @@ exports.loadSentiment = async(function*(req, res) {
         negative: R.mean(R.map((ele)=> ele.negative,sentiment))
     });
 });
+
+exports.loadTrends = async(function*(req, res) {
+    let tweets = yield Tweet.loadTrendingHashtags();
+    let trending = R.chain((ele) => ele.tweet.hashtags, tweets);
+    trending = R.map((ele) => R.toUpper(ele), trending);
+    console.log(trending);
+    let frequency = R.countBy((ele) => ele)(trending);
+    console.log(frequency);
+    let result = R.sortBy((element) => -frequency[element],R.uniq(trending));
+    res.json({
+       trending: result
+    });
+});
+
 
 
 /**
