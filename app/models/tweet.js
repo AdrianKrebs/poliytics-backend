@@ -13,7 +13,7 @@ const Schema = mongoose.Schema;
  */
 
 const TweetSchema = new Schema({
-    tweet: {text: {type: String, default: '', trim: true}, sentiment: {score: {type: Number}, label: {type: String}}, hastags: {type: [String]}},
+    tweet: {text: {type: String, default: '', trim: true}, sentiment: {score: {type: Number}, label: {type: String}}, hashtags: {type: [String]}},
     user: {id: {type: String}, name: {type: String}, party: {type: String}},
     createdAt: {type: Date, default: Date.now}
 });
@@ -111,6 +111,10 @@ TweetSchema.statics = {
 
     loadSentimentByUser: function (id) {
 
+    },
+
+    loadTrendingHashtags: function () {
+        return this.find().select({'tweet.hashtags': 1, '_id':0});
     },
 
     /**

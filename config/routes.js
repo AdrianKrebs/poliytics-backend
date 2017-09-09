@@ -6,6 +6,7 @@
 
 const home = require('../app/controllers/home');
 const tweets = require('../app/controllers/tweets.controller');
+const parlamentController = require('../app/controllers/parlament.controller');
 /**
  * Expose
  */
@@ -16,7 +17,6 @@ module.exports = function (app) {
 
 
 // tweet routes
-    app.param('id', tweets.load);
     app.get('/tweets', tweets.index);  //GET http://localhost:3000/tweets
     app.get('/tweets/count'); // count of tweets, optional query params to search for party or specific politican
 
@@ -33,6 +33,13 @@ module.exports = function (app) {
 
     //sentiment
     app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
+
+
+    app.get('/trending', tweets.loadTrends);
+
+
+
+    app.get('/councillor/:id', parlamentController.getCouncillor);
 
     /**
      * Error handling

@@ -11,23 +11,20 @@ const Mention = mongoose.model('Mention');
 const assign = Object.assign;
 const Twitter = require('twitter');
 const R = require('ramda');
-const users = require('../data/paralament-list.json');
-const userIds = R.map((user) => user.id, users.users);
+const users = require('../data/id-name-party-mapping.json');
+// const users = require('../data/paralament-list.json');
+const userIds = R.map((user) => user.id, users);
 const userIdsAsSet = new Set(userIds);
-const twitterScreenNames = R.map((user) => user.screen_name, users.users);
+const twitterScreenNames = R.map((user) => user.name, users);
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
 });
 
 const FEATURE = {
-    concepts: {},
     entities: {},
     keywords: {},
-    categories: {},
-    emotion: {},
     sentiment: {},
-    semantic_roles: {},
 };
 
 
@@ -41,7 +38,8 @@ const client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
+client.stream('statuses/filter', { follow: userIds.toString() }, function (stream) {
+    console.log('following: ' + userIds);
     stream.on('data', streamFilter);
     stream.on('error', streamError);
 });
@@ -189,6 +187,8 @@ exports.loadByParty = async(function*(req, res) {
     });
 });
 
+console.log('Tracking: ' + twitterScreenNames.toString());
+
 client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
     trackingStream.on('data', trackingFilter);
     trackingStream.on('error', trackingError);
@@ -237,6 +237,20 @@ exports.loadSentiment = async(function*(req, res) {
         negative: R.mean(R.map((ele)=> ele.negative,sentiment))
     });
 });
+
+exports.loadTrends = async(function*(req, res) {
+    let tweets = yield Tweet.loadTrendingHashtags();
+    let trending = R.chain((ele) => ele.tweet.hashtags, tweets);
+    trending = R.map((ele) => R.toUpper(ele), trending);
+    console.log(trending);
+    let frequency = R.countBy((ele) => ele)(trending);
+    console.log(frequency);
+    let result = R.sortBy((element) => -frequency[element],R.uniq(trending));
+    res.json({
+       trending: result
+    });
+});
+
 
 
 /**
