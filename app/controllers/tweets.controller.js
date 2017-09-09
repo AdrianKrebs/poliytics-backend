@@ -189,8 +189,6 @@ exports.loadByParty = async(function*(req, res) {
     });
 });
 
-console.log(twitterScreenNames.toString());
-
 client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
     trackingStream.on('data', trackingFilter);
     trackingStream.on('error', trackingError);
