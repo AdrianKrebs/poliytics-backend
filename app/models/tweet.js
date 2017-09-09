@@ -101,6 +101,11 @@ TweetSchema.statics = {
             .exec();
     },
 
+    loadByPartyWeekly: function (partyName) {
+        var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
+        return this.find({'user.party': partyName, 'createdAt': {$gte: start}});
+    },
+
     loadTweetsToday: function () {
         var start = new Date();
         start.setHours(0,0,0,0);
