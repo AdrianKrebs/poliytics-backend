@@ -27,6 +27,11 @@ module.exports = function (app) {
     app.post('/tweets', tweets.create);
     app.get('/tweets/:id/edit', tweets.edit);
 
+    //count
+    app.get('/tweets/count', tweets.loadTweetsToday);
+    app.get('/tweets/users/count', tweets.loadUsersToday);
+
+
     //mentions
     app.get('/mentions', tweets.loadMentions);
 
@@ -35,8 +40,8 @@ module.exports = function (app) {
     app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
 
 
+    // trending topics
     app.get('/trending', tweets.loadTrends);
-
 
 
     app.get('/councillor/:id', parlamentController.getCouncillor);

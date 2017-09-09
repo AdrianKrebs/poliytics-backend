@@ -185,6 +185,22 @@ exports.loadByParty = async(function*(req, res) {
     });
 });
 
+exports.loadTweetsToday = async(function*(req, res) {
+    const count = yield Tweet.loadTweetsToday();
+
+    res.json({
+        tweets: count
+    });
+});
+
+exports.loadUsersToday = async(function*(req, res) {
+    const users = yield Tweet.loadUsersToday();
+    res.json({
+        users: users.length
+    });
+});
+
+
 exports.loadMentions = function (req, res) {
     //TODO rest call
 };
