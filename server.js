@@ -16,6 +16,7 @@ const fs = require('fs');
 const join = require('path').join;
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors')
 
 
 require('./app/models/tweet');
@@ -36,6 +37,7 @@ mongoose.connect(uristring, function (err, res) {
 });
 
 const app = express();
+app.use(cors());
 require('./config/routes')(app);
 app.set('port', process.env.PORT || 5000);
 // set views path, template engine and default layout
@@ -47,7 +49,6 @@ app.set('view engine', 'jade');
 app.listen(app.get('port'), function () {
     console.log('Node app is running on port', app.get('port'));
 });
-
 
 module.exports = app;
 
