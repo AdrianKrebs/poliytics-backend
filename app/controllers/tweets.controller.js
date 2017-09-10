@@ -58,7 +58,7 @@ function streamFilter(data) {
         } else {
             console.log('sentiment analyzed: ' + JSON.stringify(result));
             const newTweet = new Tweet({
-                user: {id: data.user.id, name: data.user.name, party: "SVP"},
+                user: {id: data.user.id_str, name: data.user.name, party: getPartyById(data.user.id_str)},
                 tweet: {
                     text: data.text,
                     sentiment: {score: result.sentiment.document.score, label: result.sentiment.document.label},
@@ -69,6 +69,10 @@ function streamFilter(data) {
         }
     });
 
+}
+
+function getPartyById(id) {
+    return R.find((ele) => ele.id === id)(users).party;
 }
 function isReply(tweet) {
     if (tweet.retweeted_status
@@ -186,6 +190,37 @@ exports.loadByParty = async(function*(req, res) {
         pages: Math.ceil(count / limit)
     });
 });
+
+exports.loadTweetsToday = async(function*(req, res) {
+    const count = yield Tweet.loadTweetsToday();
+
+    res.json({
+        tweets: count
+    });
+});
+
+exports.loadUsersToday = async(function*(req, res) {
+    const users = yield Tweet.loadUsersToday();
+    res.json({
+        users: users.length
+    });
+});
+
+exports.loadByPartyWeekly = async(function*(req, res) {
+    const svp = yield Tweet.loadByPartyWeekly("SVP");
+    const sp = yield Tweet.loadByPartyWeekly("SP");
+    const fdp = yield Tweet.loadByPartyWeekly("FDP");
+    const cvp = yield Tweet.loadByPartyWeekly("CVP");
+    const glp = yield Tweet.loadByPartyWeekly("GLP");
+    const gps = yield Tweet.loadByPartyWeekly("GPS");
+    const evp = yield Tweet.loadByPartyWeekly("EVP");
+    const total = svp.length + sp.length + fdp.length + cvp.length + glp.length + gps.length + evp.length;
+    res.json({
+        tweetsPerParty: {parties: {"SVP":svp.length, "SP":sp.length, "FDP":fdp.length, "CVP": cvp.length, "GLP": glp.length, "GPS":gps.length, "EVP": evp.length}, total: total}
+    });
+});
+
+
 
 client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
     trackingStream.on('data', trackingFilter);

@@ -101,6 +101,30 @@ TweetSchema.statics = {
             .exec();
     },
 
+    loadByPartyWeekly: function (partyName) {
+        var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
+        return this.find({'user.party': partyName, 'createdAt': {$gte: start}});
+    },
+
+    loadTweetsToday: function () {
+        var start = new Date();
+        start.setHours(0,0,0,0);
+
+        var end = new Date();
+        end.setHours(23,59,59,999);
+        return this.count({createdAt: {$gte: start, $lt: end}});
+    },
+
+    loadUsersToday: function () {
+        var start = new Date();
+        start.setHours(0,0,0,0);
+
+        var end = new Date();
+        end.setHours(23,59,59,999);
+        return this.distinct("user.id", {createdAt: {$gte: start, $lt: end}});
+
+    },
+
     loadSentiment: function () {
 
     },

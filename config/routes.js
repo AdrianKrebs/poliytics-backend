@@ -18,7 +18,6 @@ module.exports = function (app) {
 
 // tweet routes
     app.get('/tweets', tweets.index);  //GET http://localhost:3000/tweets
-    app.get('/tweets/count'); // count of tweets, optional query params to search for party or specific politican
 
     app.get('/tweets/user/id/:userId', tweets.loadByUser); // GET http://localhost:3000/tweets/user?id=168234077
     app.get('/tweets/user/name/:name', tweets.loadByName);
@@ -26,6 +25,12 @@ module.exports = function (app) {
 
     app.post('/tweets', tweets.create);
     app.get('/tweets/:id/edit', tweets.edit);
+
+    //count
+    app.get('/tweets/count', tweets.loadTweetsToday);
+    app.get('/tweets/users/count', tweets.loadUsersToday);
+    app.get('/tweets/count/party', tweets.loadByPartyWeekly);
+
 
     //mentions
     app.get('/mentions', tweets.loadMentions);
@@ -35,8 +40,8 @@ module.exports = function (app) {
     app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
 
 
+    // trending topics
     app.get('/trending', tweets.loadTrends);
-
 
 
     app.get('/councillor/:id', parlamentController.getCouncillor);
