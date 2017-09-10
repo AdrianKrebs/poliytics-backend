@@ -14,8 +14,8 @@ const R = require('ramda');
 const users = require('../data/id-name-party-mapping.json');
 // const users = require('../data/paralament-list.json');
 const userIds = R.map((user) => user.id, users);
-const userIdsAsSet = new Set(userIds);
 const twitterScreenNames = R.map((user) => user.name, users);
+const twitterScreenNamesAsSet = new Set(twitterScreenNames);
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
@@ -187,8 +187,6 @@ exports.loadByParty = async(function*(req, res) {
     });
 });
 
-console.log('Tracking: ' + twitterScreenNames.toString());
-
 client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
     trackingStream.on('data', trackingFilter);
     trackingStream.on('error', trackingError);
@@ -196,12 +194,11 @@ client.stream('statuses/filter', { track: twitterScreenNames.toString() }, funct
 
 function trackingFilter (tweet) {
     console.log('Got something through tracking');
-    const mentionedUserIds = R.map((mention) =>  mention.id, tweet.entities.user_mentions);
-    const mentionedPoliticianUserIds = R.filter((userId) => userIdsAsSet.has(userId), mentionedUserIds);
-    for (let id of mentionedPoliticianUserIds) {
+    const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
+    for (let mention of politicianMentions) {
         const aMention = new Mention({
-            tweetId: tweet.id,
-            twitterUserId: id,
+            tweetId: tweet.id_str,
+            twitterUserId: mention.id_str,
             createdAt: tweet.created_at
         });
         console.log('Mention found: ' + aMention);
@@ -213,8 +210,23 @@ function trackingError (error) {
     console.log('Error during reception on track stream: ' + error);
 }
 
-exports.loadMentions = function (req, res) {
+exports.loadMentions = async(function* (req, res) {
+    let mentions = yield Mention.findByQuery(createQuery(req.query));
+    res.json(mentions);
+});
 
+function createQuery (urlQuery) {
+    if (urlQuery.party != undefined) {
+        return Mention.getQueryByIds(idsForParty(urlQuery.party.toUpperCase()));
+    } else if (urlQuery.politicianId != undefined) {
+        return Mention.getQueryById(urlQuery.politicianId);
+    } else {
+        return {};
+    }
+}
+
+function idsForParty (party) {
+    return R.map((politician) => politician.id, R.filter((politician) => politician.party === party, users));
 }
 
 //average
