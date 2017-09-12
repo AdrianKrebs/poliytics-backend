@@ -5,13 +5,17 @@
  */
 
 const mongoose = require('mongoose');
-const {wrap: async} = require('co');
+const { wrap: async } = require('co');
 const Tweet = mongoose.model('Tweet');
+const Mention = mongoose.model('Mention');
 const assign = Object.assign;
 const Twitter = require('twitter');
 const R = require('ramda');
-const Rx = require('rxjs');
 const users = require('../data/id-name-party-mapping.json');
+// const users = require('../data/paralament-list.json');
+const userIds = R.map((user) => user.id, users);
+const twitterScreenNames = R.map((user) => user.name, users);
+const twitterScreenNamesAsSet = new Set(twitterScreenNames);
 const NaturalLanguageUnderstandingV1 = require('watson-developer-cloud/natural-language-understanding/v1.js');
 const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
@@ -23,9 +27,7 @@ const FEATURE = {
     sentiment: {},
 };
 
-let userIds = R.map(function (user) {
-    return user.id;
-}, users);
+
 
 
 const client = new Twitter({
@@ -36,8 +38,8 @@ const client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
-    console.log('following: '+ userIds);
+client.stream('statuses/filter', { follow: userIds.toString() }, function (stream) {
+    console.log('following: ' + userIds);
     stream.on('data', streamFilter);
     stream.on('error', streamError);
 });
@@ -220,10 +222,47 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 
 
 
-exports.loadMentions = function (req, res) {
-    //TODO rest call
-};
+client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
+    trackingStream.on('data', trackingFilter);
+    trackingStream.on('error', trackingError);
+});
 
+function trackingFilter (tweet) {
+    console.log('Got something through tracking');
+    const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
+    for (let mention of politicianMentions) {
+        const aMention = new Mention({
+            tweetId: tweet.id_str,
+            twitterUserId: mention.id_str,
+            createdAt: tweet.created_at
+        });
+        console.log('Mention found: ' + aMention);
+        aMention.uploadAndSave();
+    }
+}
+
+function trackingError (error) {
+    console.log('Error during reception on track stream: ' + error);
+}
+
+exports.loadMentions = async(function* (req, res) {
+    let mentions = yield Mention.findByQuery(createQuery(req.query));
+    res.json(mentions);
+});
+
+function createQuery (urlQuery) {
+    if (urlQuery.party != undefined) {
+        return Mention.getQueryByIds(idsForParty(urlQuery.party.toUpperCase()));
+    } else if (urlQuery.politicianId != undefined) {
+        return Mention.getQueryById(urlQuery.politicianId);
+    } else {
+        return {};
+    }
+}
+
+function idsForParty (party) {
+    return R.map((politician) => politician.id, R.filter((politician) => politician.party === party, users));
+}
 
 //average
 // welche Zeiteinheit für Diagramm? average per week?

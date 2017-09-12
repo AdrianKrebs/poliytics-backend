@@ -38,7 +38,7 @@ mentions
 sentiment
 mentions?party=svp
 sentiment?party=svp
-mentions?politican-id=1234142
+mentions?politicanId=1234142
 sentiment?politican-id=1234142
 
 Tweets/count (default 1 woche)
