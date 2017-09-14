@@ -41,3 +41,25 @@ exports.getCouncillor = function (req, res) {
     );
 
 }
+
+exports.getFaction = function (req, res) {
+    const id = req.params.id;
+    request({
+            headers: {'content-type': 'application/json'},
+            url: 'http://ws-old.parlament.ch/factions/'+id,
+            method: 'GET'
+        }, function (error, response) {
+            if (!error && response.statusCode == 200) {
+                var obj = JSON.parse(response.body);
+                console.log(obj);
+                res.json({
+                    data: obj,
+                });
+            }
+            else {
+                console.log(error);
+            }
+        }
+    );
+
+}
