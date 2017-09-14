@@ -5,7 +5,7 @@
  */
 
 const mongoose = require('mongoose');
-const { wrap: async } = require('co');
+const {wrap: async} = require('co');
 const Tweet = mongoose.model('Tweet');
 const Mention = mongoose.model('Mention');
 const assign = Object.assign;
@@ -28,8 +28,6 @@ const FEATURE = {
 };
 
 
-
-
 const client = new Twitter({
     consumer_key: process.env.TWITTER_CONSUMER_KEY,
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
@@ -38,7 +36,7 @@ const client = new Twitter({
 });
 
 
-client.stream('statuses/filter', { follow: userIds.toString() }, function (stream) {
+client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
     console.log('following: ' + userIds);
     stream.on('data', streamFilter);
     stream.on('error', streamError);
@@ -212,22 +210,33 @@ exports.loadByPartyWeekly = async(function*(req, res) {
     const fdp = yield Tweet.loadByPartyWeekly("FDP");
     const cvp = yield Tweet.loadByPartyWeekly("CVP");
     const glp = yield Tweet.loadByPartyWeekly("GLP");
+    const bdp = yield Tweet.loadByPartyWeekly("BDP");
     const gps = yield Tweet.loadByPartyWeekly("GPS");
     const evp = yield Tweet.loadByPartyWeekly("EVP");
-    const total = svp.length + sp.length + fdp.length + cvp.length + glp.length + gps.length + evp.length;
+    const total = svp.length + sp.length + fdp.length + cvp.length + glp.length + gps.length + evp.length + bdp.length;
     res.json({
-        tweetsPerParty: {parties: {"SVP":svp.length, "SP":sp.length, "FDP":fdp.length, "CVP": cvp.length, "GLP": glp.length, "GPS":gps.length, "EVP": evp.length}, total: total}
+        tweetsPerParty: {
+            parties: {
+                "SVP": svp.length,
+                "SP": sp.length,
+                "FDP": fdp.length,
+                "CVP": cvp.length,
+                "GLP": glp.length,
+                "GPS": gps.length,
+                "EVP": evp.length,
+                "BDP": bdp.length
+            }, total: total
+        }
     });
 });
 
 
-
-client.stream('statuses/filter', { track: twitterScreenNames.toString() }, function (trackingStream) {
+client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
     trackingStream.on('data', trackingFilter);
     trackingStream.on('error', trackingError);
 });
 
-function trackingFilter (tweet) {
+function trackingFilter(tweet) {
     console.log('Got something through tracking');
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
     for (let mention of politicianMentions) {
@@ -241,18 +250,18 @@ function trackingFilter (tweet) {
     }
 }
 
-function trackingError (error) {
+function trackingError(error) {
     console.log('Error during reception on track stream: ' + error);
 }
 
-exports.loadMentions = async(function* (req, res) {
+exports.loadMentions = async(function*(req, res) {
     let mentions = yield Mention.findByQuery(createQuery(req.query));
     res.json({
         mentions: mentions
     });
 });
 
-function createQuery (urlQuery) {
+function createQuery(urlQuery) {
     if (urlQuery.party != undefined) {
         return Mention.getQueryByIds(idsForParty(urlQuery.party.toUpperCase()));
     } else if (urlQuery.politicianId != undefined) {
@@ -262,7 +271,7 @@ function createQuery (urlQuery) {
     }
 }
 
-function idsForParty (party) {
+function idsForParty(party) {
     return R.map((politician) => politician.id, R.filter((politician) => politician.party === party, users));
 }
 
@@ -273,7 +282,7 @@ exports.loadSentiment = async(function*(req, res) {
     sentiment = sentiment.map((s) => {
         let positive = 0;
         let negative = 0;
-        let label = R.path(['tweet','sentiment','label'],s);
+        let label = R.path(['tweet', 'sentiment', 'label'], s);
         if (label === 'positive') {
             positive += s.tweet.sentiment.score
         } else if (label === 'negative') {
@@ -282,8 +291,8 @@ exports.loadSentiment = async(function*(req, res) {
         return {positive: positive, negative: negative}
     });
     res.json({
-        positive: R.mean(R.map((ele)=> ele.positive,sentiment)),
-        negative: R.mean(R.map((ele)=> ele.negative,sentiment))
+        positive: R.mean(R.map((ele) => ele.positive, sentiment)),
+        negative: R.mean(R.map((ele) => ele.negative, sentiment))
     });
 });
 
@@ -294,12 +303,11 @@ exports.loadTrends = async(function*(req, res) {
     console.log(trending);
     let frequency = R.countBy((ele) => ele)(trending);
     console.log(frequency);
-    let result = R.sortBy((element) => -frequency[element],R.uniq(trending));
+    let result = R.sortBy((element) => -frequency[element], R.uniq(trending));
     res.json({
-       trending: result
+        trending: result
     });
 });
-
 
 
 /**
