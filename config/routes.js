@@ -45,6 +45,7 @@ module.exports = function (app) {
 
 
     app.get('/councillor/:id', parlamentController.getCouncillor);
+    app.get('/faction/:id', parlamentController.getFaction);
 
     /**
      * Error handling
