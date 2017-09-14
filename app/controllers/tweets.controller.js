@@ -247,7 +247,9 @@ function trackingError (error) {
 
 exports.loadMentions = async(function* (req, res) {
     let mentions = yield Mention.findByQuery(createQuery(req.query));
-    res.json(mentions);
+    res.json({
+        mentions: mentions
+    });
 });
 
 function createQuery (urlQuery) {
