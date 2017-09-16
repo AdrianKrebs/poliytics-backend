@@ -138,7 +138,17 @@ TweetSchema.statics = {
     },
 
     loadTrendingHashtags: function () {
-        return this.find().select({'tweet.hashtags': 1, '_id':0});
+        var start = new Date();
+        start.setHours(0,0,0,0);
+
+        var end = new Date();
+        end.setHours(23,59,59,999);
+        return this.find({createdAt: {$gte: start, $lt: end}}).select({'tweet.hashtags': 1, '_id':0});
+    },
+
+    loadTrendingHashtagsWeekly: function () {
+        var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
+        return this.find({'createdAt': {$gte: start}}).select({'tweet.hashtags': 1, '_id':0});
     },
 
     /**

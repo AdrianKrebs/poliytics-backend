@@ -296,14 +296,27 @@ exports.loadSentiment = async(function*(req, res) {
     });
 });
 
-exports.loadTrends = async(function*(req, res) {
-    let tweets = yield Tweet.loadTrendingHashtags();
+function extractTrendingHashtags(tweets) {
     let trending = R.chain((ele) => ele.tweet.hashtags, tweets);
     trending = R.map((ele) => R.toUpper(ele), trending);
     console.log(trending);
     let frequency = R.countBy((ele) => ele)(trending);
     console.log(frequency);
     let result = R.sortBy((element) => -frequency[element], R.uniq(trending));
+    return result;
+}
+exports.loadTrends = async(function*(req, res) {
+    let tweets = yield Tweet.loadTrendingHashtags();
+    let result = extractTrendingHashtags(tweets);
+    res.json({
+        trending: result
+    });
+});
+
+
+exports.loadTrendsWeekly = async(function*(req, res) {
+    let tweets = yield Tweet.loadTrendingHashtagsWeekly();
+    let result = extractTrendingHashtags(tweets);
     res.json({
         trending: result
     });

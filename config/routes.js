@@ -42,6 +42,7 @@ module.exports = function (app) {
 
     // trending topics
     app.get('/trending', tweets.loadTrends);
+    app.get('/trending/weekly', tweets.loadTrendsWeekly);
 
 
     app.get('/councillor/:id', parlamentController.getCouncillor);
