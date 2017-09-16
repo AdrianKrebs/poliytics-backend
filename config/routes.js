@@ -30,6 +30,7 @@ module.exports = function (app) {
     app.get('/tweets/count', tweets.loadTweetsToday);
     app.get('/tweets/users/count', tweets.loadUsersToday);
     app.get('/tweets/count/party', tweets.loadByPartyWeekly);
+    app.get('/tweets/count/weekly', tweets.loadMostActiveUsers);
 
 
     //mentions

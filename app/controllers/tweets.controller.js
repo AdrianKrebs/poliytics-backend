@@ -204,6 +204,14 @@ exports.loadUsersToday = async(function*(req, res) {
     });
 });
 
+exports.loadMostActiveUsers = async(function*(req, res) {
+    const counterPerUser = yield Tweet.loadMostActiveUsers();
+    res.json({
+        users: counterPerUser
+    });
+});
+
+
 exports.loadByPartyWeekly = async(function*(req, res) {
     const svp = yield Tweet.loadByPartyWeekly("SVP");
     const sp = yield Tweet.loadByPartyWeekly("SP");

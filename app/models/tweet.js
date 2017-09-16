@@ -13,7 +13,11 @@ const Schema = mongoose.Schema;
  */
 
 const TweetSchema = new Schema({
-    tweet: {text: {type: String, default: '', trim: true}, sentiment: {score: {type: Number}, label: {type: String}}, hashtags: {type: [String]}},
+    tweet: {
+        text: {type: String, default: '', trim: true},
+        sentiment: {score: {type: Number}, label: {type: String}},
+        hashtags: {type: [String]}
+    },
     user: {id: {type: String}, name: {type: String}, party: {type: String}},
     createdAt: {type: Date, default: Date.now}
 });
@@ -108,19 +112,31 @@ TweetSchema.statics = {
 
     loadTweetsToday: function () {
         var start = new Date();
-        start.setHours(0,0,0,0);
+        start.setHours(0, 0, 0, 0);
 
         var end = new Date();
-        end.setHours(23,59,59,999);
+        end.setHours(23, 59, 59, 999);
         return this.count({createdAt: {$gte: start, $lt: end}});
+    },
+
+    loadMostActiveUsers: function () {
+        var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
+        return this.aggregate([
+            {
+                $match: {
+                    'createdAt': {$gte: start}
+                }
+            },
+            {$group: {_id: "$user.id", count: {$sum: 1}}}
+        ]);
     },
 
     loadUsersToday: function () {
         var start = new Date();
-        start.setHours(0,0,0,0);
+        start.setHours(0, 0, 0, 0);
 
         var end = new Date();
-        end.setHours(23,59,59,999);
+        end.setHours(23, 59, 59, 999);
         return this.distinct("user.id", {createdAt: {$gte: start, $lt: end}});
 
     },
@@ -130,7 +146,11 @@ TweetSchema.statics = {
     },
 
     loadSentimentByParty: function (partyName) {
-        return this.find({'user.party': partyName}).select({ 'user.party': 1, 'tweet.sentiment.score': 1, 'tweet.sentiment.label':1});
+        return this.find({'user.party': partyName}).select({
+            'user.party': 1,
+            'tweet.sentiment.score': 1,
+            'tweet.sentiment.label': 1
+        });
     },
 
     loadSentimentByUser: function (id) {
@@ -139,16 +159,16 @@ TweetSchema.statics = {
 
     loadTrendingHashtags: function () {
         var start = new Date();
-        start.setHours(0,0,0,0);
+        start.setHours(0, 0, 0, 0);
 
         var end = new Date();
-        end.setHours(23,59,59,999);
-        return this.find({createdAt: {$gte: start, $lt: end}}).select({'tweet.hashtags': 1, '_id':0});
+        end.setHours(23, 59, 59, 999);
+        return this.find({createdAt: {$gte: start, $lt: end}}).select({'tweet.hashtags': 1, '_id': 0});
     },
 
     loadTrendingHashtagsWeekly: function () {
         var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
-        return this.find({'createdAt': {$gte: start}}).select({'tweet.hashtags': 1, '_id':0});
+        return this.find({'createdAt': {$gte: start}}).select({'tweet.hashtags': 1, '_id': 0});
     },
 
     /**
