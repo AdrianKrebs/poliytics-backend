@@ -127,7 +127,8 @@ TweetSchema.statics = {
                     'createdAt': {$gte: start}
                 }
             },
-            {$group: {_id: "$user.id", count: {$sum: 1}}}
+            {$group: {_id: "$user.id", count: {$sum: 1}}},
+            {$sort: {'count': -1}}
         ]);
     },
 
