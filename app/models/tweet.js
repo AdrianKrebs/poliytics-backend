@@ -168,6 +168,24 @@ TweetSchema.statics = {
         return this.find({createdAt: {$gte: start, $lt: end}}).select({'tweet.hashtags': 1, '_id': 0});
     },
 
+    loadTrendingHashtagsByParty: function (party) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.find({createdAt: {$gte: start, $lt: end}, 'user.party':party}).select({'tweet.hashtags': 1, '_id': 0});
+    },
+
+    loadTrendingHashtagsByUser: function (id) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.find({createdAt: {$gte: start, $lt: end}, 'user.id': id}).select({'tweet.hashtags': 1, '_id': 0});
+    },
+
     loadTrendingHashtagsWeekly: function () {
         var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
         return this.find({'createdAt': {$gte: start}}).select({'tweet.hashtags': 1, '_id': 0});

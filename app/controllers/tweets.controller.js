@@ -314,7 +314,14 @@ function extractTrendingHashtags(tweets) {
     return result;
 }
 exports.loadTrends = async(function*(req, res) {
-    let tweets = yield Tweet.loadTrendingHashtags();
+    let tweets;
+    if (req.query.party) {
+        tweets = yield Tweet.loadTrendingHashtagsByParty(req.query.party.toUpperCase());
+    } else if (req.query.politicianId) {
+        tweets = yield Tweet.loadTrendingHashtagsByUser(req.query.party.toUpperCase());
+    } else {
+        tweets = yield Tweet.loadTrendingHashtags();
+    }
     let result = extractTrendingHashtags(tweets);
     res.json({
         trending: result
