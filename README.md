@@ -35,11 +35,11 @@ load by party name <br>
 
 Coming soon:
 mentions
-sentiment
+sentiments
 mentions?party=svp
-sentiment?party=svp
+sentiments?party=svp
 mentions?politicanId=1234142
-sentiment?politican-id=1234142
+sentiments?politicanId=1234142
 
 Tweets/count (default 1 woche)
 Tweets/count?party=svp

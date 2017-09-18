@@ -125,20 +125,21 @@ TweetSchema.statics = {
 
     },
 
-    loadSentiment: function () {
-
-    },
-
     loadSentimentByParty: function (partyName) {
         return this.find({'user.party': partyName}).select({ 'user.party': 1, 'tweet.sentiment.score': 1, 'tweet.sentiment.label':1});
     },
 
-    loadSentimentByUser: function (id) {
-
-    },
-
     loadTrendingHashtags: function () {
         return this.find().select({'tweet.hashtags': 1, '_id':0});
+    },
+
+    findSentimentByQuery: function (query) {
+        return this.find(query).select({
+            'user.id': 1,
+            'tweet.sentiment.label': 1,
+            'tweet.sentiment.score': 1,
+            createdAt: 1
+        });
     },
 
     /**

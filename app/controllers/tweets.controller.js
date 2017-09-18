@@ -245,10 +245,17 @@ function trackingError (error) {
     console.log('Error during reception on track stream: ' + error);
 }
 
-exports.loadMentions = async(function* (req, res) {
-    let mentions = yield Mention.findByQuery(createQuery(req.query));
-    res.json({
+exports.loadMentions = async(function* (request, response) {
+    let mentions = yield Mention.findByQuery(createQuery(request.query));
+    response.json({
         mentions: mentions
+    });
+});
+
+exports.loadSentiments = async(function*(request, response) {
+    let sentiments = yield Tweet.findSentimentByQuery(createQuery(request.query));
+    response.json({
+        sentiments: sentiments
     });
 });
 
@@ -268,7 +275,7 @@ function idsForParty (party) {
 
 //average
 // welche Zeiteinheit für Diagramm? average per week?
-exports.loadSentiment = async(function*(req, res) {
+exports._loadSentiment = async(function*(req, res) {
     let sentiment = yield Tweet.loadSentimentByParty("SVP");
     sentiment = sentiment.map((s) => {
         let positive = 0;
