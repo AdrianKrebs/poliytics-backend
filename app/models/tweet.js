@@ -128,7 +128,8 @@ TweetSchema.statics = {
                 }
             },
             {$group: {_id: "$user.id", count: {$sum: 1}}},
-            {$sort: {'count': -1}}
+            {$sort: {'count': -1}},
+            {$limit: 10}
         ]);
     },
 
