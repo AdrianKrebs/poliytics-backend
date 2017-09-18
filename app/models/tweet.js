@@ -119,6 +119,24 @@ TweetSchema.statics = {
         return this.count({createdAt: {$gte: start, $lt: end}});
     },
 
+    loadTweetsTodayByParty: function (party) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.count({createdAt: {$gte: start, $lt: end}, 'user.party': party});
+    },
+
+    loadTweetsTodayByUser: function (id) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.count({createdAt: {$gte: start, $lt: end}, 'user.id': id});
+    },
+
     loadMostActiveUsers: function () {
         var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
         return this.aggregate([
@@ -140,6 +158,24 @@ TweetSchema.statics = {
         var end = new Date();
         end.setHours(23, 59, 59, 999);
         return this.distinct("user.id", {createdAt: {$gte: start, $lt: end}});
+
+    },
+    loadUsersTodayByParty: function (party) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.distinct("user.id", {createdAt: {$gte: start, $lt: end},'user.party': party});
+
+    },
+    loadUsersTodayByUser: function (id) {
+        var start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        var end = new Date();
+        end.setHours(23, 59, 59, 999);
+        return this.distinct("user.id", {createdAt: {$gte: start, $lt: end}, 'user.id':id});
 
     },
 

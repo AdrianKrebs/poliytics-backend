@@ -190,15 +190,29 @@ exports.loadByParty = async(function*(req, res) {
 });
 
 exports.loadTweetsToday = async(function*(req, res) {
-    const count = yield Tweet.loadTweetsToday();
-
+    let count;
+    if (req.query.party) {
+        count = yield Tweet.loadTweetsTodayByParty(req.query.party.toUpperCase());
+    } else if (req.query.politicianId) {
+        count = yield Tweet.loadTweetsTodayByUser(req.query.politicianId);
+    } else {
+        count = yield Tweet.loadTweetsToday();
+    }
     res.json({
         tweets: count
     });
 });
 
 exports.loadUsersToday = async(function*(req, res) {
-    const users = yield Tweet.loadUsersToday();
+    let users;
+    if (req.query.party) {
+        users = yield Tweet.loadUsersTodayByParty(req.query.party.toUpperCase());
+    } else if (req.query.politicianId) {
+        users = yield Tweet.loadUsersTodayByUser(req.query.politicianId);
+    } else {
+        users = yield Tweet.loadUsersToday();
+    }
+
     res.json({
         users: users.length
     });
@@ -318,7 +332,7 @@ exports.loadTrends = async(function*(req, res) {
     if (req.query.party) {
         tweets = yield Tweet.loadTrendingHashtagsByParty(req.query.party.toUpperCase());
     } else if (req.query.politicianId) {
-        tweets = yield Tweet.loadTrendingHashtagsByUser(req.query.party.toUpperCase());
+        tweets = yield Tweet.loadTrendingHashtagsByUser(req.query.politicianId);
     } else {
         tweets = yield Tweet.loadTrendingHashtags();
     }
