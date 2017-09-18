@@ -207,8 +207,6 @@ exports.loadUsersToday = async(function*(req, res) {
     let users;
     if (req.query.party) {
         users = yield Tweet.loadUsersTodayByParty(req.query.party.toUpperCase());
-    } else if (req.query.politicianId) {
-        users = yield Tweet.loadUsersTodayByUser(req.query.politicianId);
     } else {
         users = yield Tweet.loadUsersToday();
     }

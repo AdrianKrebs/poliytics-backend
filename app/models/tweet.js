@@ -169,15 +169,6 @@ TweetSchema.statics = {
         return this.distinct("user.id", {createdAt: {$gte: start, $lt: end},'user.party': party});
 
     },
-    loadUsersTodayByUser: function (id) {
-        var start = new Date();
-        start.setHours(0, 0, 0, 0);
-
-        var end = new Date();
-        end.setHours(23, 59, 59, 999);
-        return this.distinct("user.id", {createdAt: {$gte: start, $lt: end}, 'user.id':id});
-
-    },
 
     loadSentiment: function () {
 
