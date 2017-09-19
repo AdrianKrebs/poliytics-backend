@@ -142,6 +142,14 @@ TweetSchema.statics = {
         });
     },
 
+    getQueryById: function (id) {
+        return { 'user.id': id };
+    },
+
+    getQueryByParty: function (party) {
+        return { 'user.party': party };
+    },
+
     /**
      * List articles
      *
