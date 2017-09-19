@@ -37,7 +37,7 @@ module.exports = function (app) {
 
 
     //sentiment
-    app.get('/sentiment', tweets.loadSentiment); //mentions?politican-id=1234142
+    app.get('/sentiments', tweets.loadSentiments); //mentions?politican-id=1234142
 
 
     // trending topics
