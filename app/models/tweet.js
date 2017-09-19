@@ -170,20 +170,8 @@ TweetSchema.statics = {
 
     },
 
-    loadSentiment: function () {
-
-    },
-
     loadSentimentByParty: function (partyName) {
-        return this.find({'user.party': partyName}).select({
-            'user.party': 1,
-            'tweet.sentiment.score': 1,
-            'tweet.sentiment.label': 1
-        });
-    },
-
-    loadSentimentByUser: function (id) {
-
+        return this.find({'user.party': partyName}).select({ 'user.party': 1, 'tweet.sentiment.score': 1, 'tweet.sentiment.label':1});
     },
 
     loadTrendingHashtags: function () {
@@ -216,6 +204,23 @@ TweetSchema.statics = {
     loadTrendingHashtagsWeekly: function () {
         var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
         return this.find({'createdAt': {$gte: start}}).select({'tweet.hashtags': 1, '_id': 0});
+    },
+
+    findSentimentByQuery: function (query) {
+        return this.find(query).select({
+            'user.id': 1,
+            'tweet.sentiment.label': 1,
+            'tweet.sentiment.score': 1,
+            createdAt: 1
+        });
+    },
+
+    getQueryById: function (id) {
+        return { 'user.id': id };
+    },
+
+    getQueryByParty: function (party) {
+        return { 'user.party': party };
     },
 
     /**
