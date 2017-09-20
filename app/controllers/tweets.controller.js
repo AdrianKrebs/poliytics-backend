@@ -44,7 +44,6 @@ client.stream('statuses/filter', {follow: userIds.toString()}, function (stream)
 
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
-    console.log('let me analyze the sentiment of it....');
 
     if (isReply(data)) {
         return;
@@ -54,7 +53,6 @@ function streamFilter(data) {
         if (err) {
             console.log(err);
         } else {
-            console.log('sentiment analyzed: ' + JSON.stringify(result));
             const newTweet = new Tweet({
                 user: {id: data.user.id_str, name: data.user.name, party: getPartyById(data.user.id_str)},
                 tweet: {
@@ -257,7 +255,6 @@ client.stream('statuses/filter', {track: twitterScreenNames.toString()}, functio
 });
 
 function trackingFilter(tweet) {
-    console.log('Got something through tracking');
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
     for (let mention of politicianMentions) {
         const aMention = new Mention({
@@ -265,7 +262,6 @@ function trackingFilter(tweet) {
             twitterUserId: mention.id_str,
             createdAt: tweet.created_at
         });
-        console.log('Mention found: ' + aMention);
         aMention.uploadAndSave();
     }
 }
@@ -336,9 +332,7 @@ exports._loadSentiment = async(function*(req, res) {
 function extractTrendingHashtags(tweets) {
     let trending = R.chain((ele) => ele.tweet.hashtags, tweets);
     trending = R.map((ele) => R.toUpper(ele), trending);
-    console.log(trending);
     let frequency = R.countBy((ele) => ele)(trending);
-    console.log(frequency);
     let result = R.sortBy((element) => -frequency[element], R.uniq(trending));
     return result;
 }

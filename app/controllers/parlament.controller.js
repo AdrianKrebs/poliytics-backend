@@ -29,7 +29,6 @@ exports.getCouncillor = function (req, res) {
         }, function (error, response) {
             if (!error && response.statusCode == 200) {
                 var obj = JSON.parse(response.body);
-                console.log(obj);
                 res.json({
                     data: obj,
                 });
@@ -51,7 +50,6 @@ exports.getFaction = function (req, res) {
         }, function (error, response) {
             if (!error && response.statusCode == 200) {
                 var obj = JSON.parse(response.body);
-                console.log(obj);
                 res.json({
                     data: obj,
                 });
