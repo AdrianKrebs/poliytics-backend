@@ -37,6 +37,7 @@ const client = new Twitter({
 
 
 setTimeout(function () {
+    console.log('connecting to stream');
     client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
         console.log('following: ' + userIds);
         stream.on('data', streamFilter);
@@ -252,6 +253,7 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 
 
 setTimeout(function () {
+    console.log('connecting to stream');
     client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
         trackingStream.on('data', trackingFilter);
         trackingStream.on('error', trackingError);
