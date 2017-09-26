@@ -21,6 +21,10 @@ const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
 });
 
+
+const DELAY = 120000;
+
+
 const FEATURE = {
     entities: {},
     keywords: {},
@@ -44,7 +48,7 @@ setTimeout(function () {
         stream.on('error', streamError);
     });
 
-}, 180000); // time to restart to avoid connection limit reached exception
+}, 1.5 * DELAY); // time to restart to avoid connection limit reached exception
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
 
@@ -252,15 +256,16 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 });
 
 
+
 setTimeout(function () {
     console.log('connecting to stream');
     client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
         trackingStream.on('data', trackingFilter);
         trackingStream.on('error', trackingError);
     });
-}, 120000); // delay to avoid connection limit reached
+}, DELAY); // delay to avoid connection limit reached
 
-function trackingFilter(tweet) {
+function     trackingFilter(tweet) {
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
     for (let mention of politicianMentions) {
         const aMention = new Mention({
