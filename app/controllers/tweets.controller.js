@@ -36,12 +36,14 @@ const client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
-    console.log('following: ' + userIds);
-    stream.on('data', streamFilter);
-    stream.on('error', streamError);
-});
+setTimeout(function () {
+    client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
+        console.log('following: ' + userIds);
+        stream.on('data', streamFilter);
+        stream.on('error', streamError);
+    });
 
+}, 10000); // time to restart to avoid connection limit reached exception
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
 
@@ -249,10 +251,12 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 });
 
 
-client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
-    trackingStream.on('data', trackingFilter);
-    trackingStream.on('error', trackingError);
-});
+setTimeout(function () {
+    client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
+        trackingStream.on('data', trackingFilter);
+        trackingStream.on('error', trackingError);
+    });
+}, 15000); // delay to avoid connection limit reached
 
 function trackingFilter(tweet) {
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
@@ -270,14 +274,14 @@ function trackingError(error) {
     console.log('Error during reception on track stream: ' + error);
 }
 
-exports.loadMentions = async(function* (request, response) {
+exports.loadMentions = async(function*(request, response) {
     let mentions = yield Mention.findByQuery(createMentionQuery(request.query));
     response.json({
         mentions: mentions
     });
 });
 
-function createMentionQuery (urlQuery) {
+function createMentionQuery(urlQuery) {
     if (urlQuery.party != undefined) {
         return Mention.getQueryByIds(idsForParty(urlQuery.party.toUpperCase()));
     } else if (urlQuery.politicianId != undefined) {
@@ -298,7 +302,7 @@ exports.loadSentiments = async(function*(request, response) {
     });
 });
 
-function createSentimentQuery (urlQuery) {
+function createSentimentQuery(urlQuery) {
     if (urlQuery.party != undefined) {
         return Tweet.getQueryByParty(urlQuery.party.toUpperCase());
     } else if (urlQuery.politicianId != undefined) {
