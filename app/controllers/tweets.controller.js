@@ -44,7 +44,7 @@ setTimeout(function () {
         stream.on('error', streamError);
     });
 
-}, 10000); // time to restart to avoid connection limit reached exception
+}, 20000); // time to restart to avoid connection limit reached exception
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
 
@@ -258,7 +258,7 @@ setTimeout(function () {
         trackingStream.on('data', trackingFilter);
         trackingStream.on('error', trackingError);
     });
-}, 15000); // delay to avoid connection limit reached
+}, 25000); // delay to avoid connection limit reached
 
 function trackingFilter(tweet) {
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
