@@ -222,7 +222,13 @@ exports.loadUsersToday = async(function*(req, res) {
 });
 
 exports.loadMostActiveUsers = async(function*(req, res) {
-    const counterPerUser = yield Tweet.loadMostActiveUsers();
+    let limit;
+    if (req.query.limit) {
+        limit =  req.query.limit;
+    } else {
+        limit = 150
+    }
+    const counterPerUser = yield Tweet.loadMostActiveUsers(limit);
     res.json({
         users: counterPerUser
     });
@@ -256,7 +262,6 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 });
 
 
-
 setTimeout(function () {
     console.log('connecting to stream');
     client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
@@ -265,7 +270,7 @@ setTimeout(function () {
     });
 }, DELAY); // delay to avoid connection limit reached
 
-function     trackingFilter(tweet) {
+function trackingFilter(tweet) {
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
     for (let mention of politicianMentions) {
         const aMention = new Mention({
