@@ -224,7 +224,7 @@ exports.loadUsersToday = async(function*(req, res) {
 exports.loadMostActiveUsers = async(function*(req, res) {
     let limit;
     if (req.query.limit) {
-        limit =  req.query.limit;
+        limit =  Number.parseInt(req.query.limit);
     } else {
         limit = 150
     }
