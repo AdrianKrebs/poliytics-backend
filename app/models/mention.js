@@ -1,6 +1,7 @@
 'use strict';
 
 const mongoose = require('mongoose');
+const moment = require('moment');
 
 const MentionSchema = new mongoose.Schema({
     tweetId: { type: String },
@@ -24,9 +25,13 @@ MentionSchema.methods = {
 };
 
 MentionSchema.statics = {
+
     findByQuery: function (query) {
-        console.log('Querying MentionSchema with query: ' + JSON.stringify(query));
         return this.find(query).exec();
+    },
+
+    countByQuery: function (query) {
+        return this.count(query);
     },
 
     getQueryById: function (id) {
@@ -35,7 +40,33 @@ MentionSchema.statics = {
 
     getQueryByIds: function (ids) {
         return { twitterUserId: { $in: ids } };
-    }
+    },
+
+    getQueryTodayById: function (id) {
+        const start = new Date();
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date();
+        end.setHours(23, 59, 59, 999);
+
+        return {
+            twitterUserId: id,
+            createdAt: { $gte: start, $lt: end }
+        };
+    },
+
+    getMentionsCountLastWeek: function () {
+        const start = moment(new Date()).add(-7, 'days').toDate();
+        return this.aggregate([{
+                $match: {
+                    'createdAt': { $gte: start }
+                }
+            }, {
+                $group: { _id: '$twitterUserId', count: { $sum: 1 } }
+            }
+        ]);
+    },
+
 };
 
 mongoose.model('Mention', MentionSchema);

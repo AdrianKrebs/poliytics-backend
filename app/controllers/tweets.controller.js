@@ -307,6 +307,13 @@ function idsForParty(party) {
     return R.map((politician) => politician.id, R.filter((politician) => politician.party === party, users));
 }
 
+exports.getMentionsCountLastWeek = async(function* (request, response) {
+    let mentionsCount = yield Mention.getMentionsCountLastWeek();
+    response.json({
+        counts: mentionsCount
+    });
+});
+
 exports.loadSentiments = async(function*(request, response) {
     let sentiments = yield Tweet.findSentimentByQuery(createSentimentQuery(request.query));
     response.json({
