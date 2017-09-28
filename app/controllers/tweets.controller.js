@@ -21,6 +21,10 @@ const nlu = new NaturalLanguageUnderstandingV1({
     version_date: NaturalLanguageUnderstandingV1.VERSION_DATE_2017_02_27
 });
 
+
+const DELAY = 120000;
+
+
 const FEATURE = {
     entities: {},
     keywords: {},
@@ -36,15 +40,17 @@ const client = new Twitter({
 });
 
 
-client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
-    console.log('following: ' + userIds);
-    stream.on('data', streamFilter);
-    stream.on('error', streamError);
-});
+setTimeout(function () {
+    console.log('connecting to stream');
+    client.stream('statuses/filter', {follow: userIds.toString()}, function (stream) {
+        console.log('following: ' + userIds);
+        stream.on('data', streamFilter);
+        stream.on('error', streamError);
+    });
 
+}, 1.5 * DELAY); // time to restart to avoid connection limit reached exception
 function streamFilter(data) {
     console.log('someone just tweeted!.....' + data.text);
-    console.log('let me analyze the sentiment of it....');
 
     if (isReply(data)) {
         return;
@@ -54,7 +60,6 @@ function streamFilter(data) {
         if (err) {
             console.log(err);
         } else {
-            console.log('sentiment analyzed: ' + JSON.stringify(result));
             const newTweet = new Tweet({
                 user: {id: data.user.id_str, name: data.user.name, party: getPartyById(data.user.id_str)},
                 tweet: {
@@ -217,7 +222,13 @@ exports.loadUsersToday = async(function*(req, res) {
 });
 
 exports.loadMostActiveUsers = async(function*(req, res) {
-    const counterPerUser = yield Tweet.loadMostActiveUsers();
+    let limit;
+    if (req.query.limit) {
+        limit =  Number.parseInt(req.query.limit);
+    } else {
+        limit = 150
+    }
+    const counterPerUser = yield Tweet.loadMostActiveUsers(limit);
     res.json({
         users: counterPerUser
     });
@@ -251,13 +262,15 @@ exports.loadByPartyWeekly = async(function*(req, res) {
 });
 
 
-client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
-    trackingStream.on('data', trackingFilter);
-    trackingStream.on('error', trackingError);
-});
+setTimeout(function () {
+    console.log('connecting to stream');
+    client.stream('statuses/filter', {track: twitterScreenNames.toString()}, function (trackingStream) {
+        trackingStream.on('data', trackingFilter);
+        trackingStream.on('error', trackingError);
+    });
+}, DELAY); // delay to avoid connection limit reached
 
 function trackingFilter(tweet) {
-    console.log('Got something through tracking');
     const politicianMentions = R.filter((mention) => twitterScreenNamesAsSet.has(mention.screen_name), tweet.entities.user_mentions);
     for (let mention of politicianMentions) {
         const aMention = new Mention({
@@ -265,7 +278,6 @@ function trackingFilter(tweet) {
             twitterUserId: mention.id_str,
             createdAt: tweet.created_at
         });
-        console.log('Mention found: ' + aMention);
         aMention.uploadAndSave();
     }
 }
@@ -274,14 +286,14 @@ function trackingError(error) {
     console.log('Error during reception on track stream: ' + error);
 }
 
-exports.loadMentions = async(function* (request, response) {
+exports.loadMentions = async(function*(request, response) {
     let mentions = yield Mention.findByQuery(createMentionQuery(request.query));
     response.json({
         mentions: mentions
     });
 });
 
-function createMentionQuery (urlQuery) {
+function createMentionQuery(urlQuery) {
     if (urlQuery.party != undefined) {
         return Mention.getQueryByIds(idsForParty(urlQuery.party.toUpperCase()));
     } else if (urlQuery.politicianId != undefined) {
@@ -309,7 +321,7 @@ exports.loadSentiments = async(function*(request, response) {
     });
 });
 
-function createSentimentQuery (urlQuery) {
+function createSentimentQuery(urlQuery) {
     if (urlQuery.party != undefined) {
         return Tweet.getQueryByParty(urlQuery.party.toUpperCase());
     } else if (urlQuery.politicianId != undefined) {
@@ -343,9 +355,7 @@ exports._loadSentiment = async(function*(req, res) {
 function extractTrendingHashtags(tweets) {
     let trending = R.chain((ele) => ele.tweet.hashtags, tweets);
     trending = R.map((ele) => R.toUpper(ele), trending);
-    console.log(trending);
     let frequency = R.countBy((ele) => ele)(trending);
-    console.log(frequency);
     let result = R.sortBy((element) => -frequency[element], R.uniq(trending));
     return result;
 }

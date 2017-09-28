@@ -137,7 +137,7 @@ TweetSchema.statics = {
         return this.count({createdAt: {$gte: start, $lt: end}, 'user.id': id});
     },
 
-    loadMostActiveUsers: function () {
+    loadMostActiveUsers: function (limit) {
         var start = new Date((new Date().getTime() - (7 * 24 * 60 * 60 * 1000)));
         return this.aggregate([
             {
@@ -147,7 +147,7 @@ TweetSchema.statics = {
             },
             {$group: {_id: "$user.id", count: {$sum: 1}}},
             {$sort: {'count': -1}},
-            {$limit: 10}
+            {$limit: limit}
         ]);
     },
 
