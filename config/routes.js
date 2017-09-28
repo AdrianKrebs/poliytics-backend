@@ -35,7 +35,7 @@ module.exports = function (app) {
 
     //mentions
     app.get('/mentions', tweets.loadMentions);
-
+    app.get('/mentions/countLastWeek', tweets.getMentionsCountLastWeek);
 
     //sentiment
     app.get('/sentiments', tweets.loadSentiments); //mentions?politican-id=1234142
