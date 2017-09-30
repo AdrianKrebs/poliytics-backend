@@ -67,6 +67,45 @@ MentionSchema.statics = {
         ]);
     },
 
+    getCountQueryById (id) {
+        const start = moment(new Date()).add(-30, 'days').toDate();
+        return {
+            'createdAt': { $gte: start },
+            'twitterUserId': id
+        };
+    },
+
+    getCountQueryByIds (ids) {
+        const start = moment(new Date()).add(-30, 'days').toDate();
+        return {
+            'createdAt': { $gte: start },
+            'twitterUserId': { $in: ids }
+        };
+    },
+
+    getCountQueryForAll () {
+        const start = moment(new Date()).add(-30, 'days').toDate();
+        return {
+            'createdAt': { $gte: start }
+        };
+    },
+
+    getMentionsCountByQuery: function (query) {
+        return this.aggregate([{
+            $match: query
+            }, {
+                $group: {
+                    _id: {
+                        year: { $year: '$createdAt' },
+                        month: { $month: '$createdAt' },
+                        day: { $dayOfMonth: '$createdAt' }
+                    },
+                    count: { $sum: 1 }
+                }
+            }
+        ]);
+    }
+
 };
 
 mongoose.model('Mention', MentionSchema);
