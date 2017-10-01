@@ -41,6 +41,10 @@ sentiments?party=svp
 mentions?politicanId=1234142
 sentiments?politicanId=1234142
 
+mentions/count
+mentions/count?party=GLP
+mentions/count?politicianId=280789941
+
 Tweets/count (default 1 woche)
 Tweets/count?party=svp
 Tweets/count?politican_id=svp

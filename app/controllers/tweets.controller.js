@@ -314,6 +314,41 @@ exports.getMentionsCountLastWeek = async(function* (request, response) {
     });
 });
 
+exports.getMentionsCount = async(function* (request, response) {
+    const query = createMentionCountQuery(request.query);
+    let count = yield Mention.getMentionsCountByQuery(query.mongo);
+    response.json({
+        count: count,
+        query: query.object
+    });
+});
+
+function createMentionCountQuery (urlQuery) {
+    if (urlQuery.party != undefined) {
+        const party = urlQuery.party.toUpperCase();
+        return {
+            mongo: Mention.getCountQueryByIds(idsForParty(party)),
+            object: {
+                party: party
+            }
+        };
+    } else if (urlQuery.politicianId != undefined) {
+        return {
+            mongo: Mention.getCountQueryById(urlQuery.politicianId),
+            object: {
+                politicianId: urlQuery.politicianId
+            }
+        };
+    } else {
+        return {
+            mongo: Mention.getCountQueryForAll(),
+            object: {
+                parliament: 'all'
+            }
+        };
+    }
+}
+
 exports.loadSentiments = async(function*(request, response) {
     let sentiments = yield Tweet.findSentimentByQuery(createSentimentQuery(request.query));
     response.json({
@@ -321,7 +356,7 @@ exports.loadSentiments = async(function*(request, response) {
     });
 });
 
-function createSentimentQuery(urlQuery) {
+function createSentimentQuery (urlQuery) {
     if (urlQuery.party != undefined) {
         return Tweet.getQueryByParty(urlQuery.party.toUpperCase());
     } else if (urlQuery.politicianId != undefined) {
